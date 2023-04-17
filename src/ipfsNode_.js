@@ -1,12 +1,14 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { create } from "ipfs-core";
+import { IPFSClient } from "ipfs-message-port-client";
+
 import { toString as uint8ArrayToAsciiString } from "uint8arrays/to-string";
 import { concat as uint8ArrayConcat } from "uint8arrays/concat";
 
 import configIpfs from "./configIpfs.js";
 
-import { getPeerAlias, setPeerMap } from "./peerMap";
-import { connectToSwarm } from "./utils";
+import { getPeerAlias, setPeerMap } from "./peerMap.js";
+// import { connectToSwarm } from "./utils";
 
 const CYBERNODE_SWARM_ADDR =
   "/dns4/swarm.io.cybernode.ai/tcp/443/wss/p2p/QmUgmRxoLtGERot7Y6G7UyF6fwvnusQZfGR15PuE6pY3aB";
@@ -30,7 +32,7 @@ const getIpfsContent = async (ipfs, cid) => {
   return uint8ArrayToAsciiString(uint8ArrayConcat(chunks));
 };
 
-function IpfsNode({ nodeId }) {
+function IpfsNode({ nodeId, workerPort }) {
   const ipfs = useRef();
   const [isIpfsReady, setIpfsReady] = useState(Boolean(ipfs));
 
@@ -63,9 +65,10 @@ function IpfsNode({ nodeId }) {
         //   console.log(`Map RANDOM peer ${peerId} to ${nodeId}`);
         // }
 
-        ipfs.current = await create(configIpfs(nodeId));
-        // await connectToSwarm(ipfs.current, CYBERNODE_SWARM_ADDR);
+        ipfs.current = IPFSClient.from(workerPort);
 
+        // await connectToSwarm(ipfs.current, CYBERNODE_SWARM_ADDR);
+        console.log("----ipfs.current", ipfs.current);
         const id = await ipfs.current.id();
         setPeerMap(nodeId, id.id.toString());
 
