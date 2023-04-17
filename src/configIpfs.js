@@ -3,8 +3,49 @@ import { webSockets } from "@libp2p/websockets";
 import * as filters from "@libp2p/websockets/filters";
 // import { Options } from "ipfs-core/dist/src/types";
 // import { peerMap } from "./peerMap";
+import { all, dnsWsOrWss } from "@libp2p/websockets/filters";
 
 // import { peerIdFromString } from "@libp2p/peer-id";
+import { webRTCStar } from "@libp2p/webrtc-star";
+// import { MulticastDNS } from '@libp2p/mdns';
+// import { Bootstrap } from '@libp2p/bootstrap';
+import { kadDHT } from "@libp2p/kad-dht";
+import { mplex } from "@libp2p/mplex";
+import { noise } from "@chainsafe/libp2p-noise";
+import { createLibp2p } from "libp2p";
+import { webTransport } from "@libp2p/webtransport";
+import { webRTCDirect } from "@libp2p/webrtc-direct";
+// import { tcp } from "@libp2p/tcp";
+const ws = webSockets({
+  filter: all,
+  // websocket: {
+  //   protocol: 'wss',
+  // },
+});
+const nodeLibp2p = (opts) => {
+  const webRTC = webRTCStar();
+  const peerId = opts.peerId;
+  console.log("------opts", opts.libp2pOptions);
+  return createLibp2p(opts.libp2pOptions);
+  // return createLibp2p({
+  //   peerId,
+  //   // addresses: {
+  //   //   listen: [
+  //   //     "/dns4/ws-star.discovery.cybernode.ai/tcp/443/wss/p2p-webrtc-star",
+  //   //     "/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star",
+  //   //     "/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star",
+  //   //   ],
+  //   // },
+  //   dht: kadDHT(),
+  //   transports: [webRTC.transport, ws, webRTCDirect(), webTransport()],
+  //   streamMuxers: [mplex()],
+  //   peerDiscovery: [webRTC.discovery],
+  //   connectionEncryption: [noise()],
+  //   nat: {
+  //     enabled: true,
+  //   },
+  // });
+};
 
 const configIpfs = (nodeId) => {
   // const peer = peerIdFromString(peerMap[nodeId]);
@@ -39,8 +80,9 @@ const configIpfs = (nodeId) => {
       Addresses: {
         // Gateway: "/ip4/127.0.0.1/tcp/8080",
         Swarm: [
-          // "/ip4/0.0.0.0/tcp/4001",
-          // "/ip6/::/tcp/4001",
+          "/ip4/0.0.0.0/tcp/4001",
+          // "/ip4/0.0.0.0/tcp/4003/ws",
+          // "/ip4/0.0.0.0/tcp/4002/ws",
           // "/ip4/0.0.0.0/tcp/443/wss",
           // "/dns4/swarm.io.cybernode.ai/tcp/443/wss/p2p/QmUgmRxoLtGERot7Y6G7UyF6fwvnusQZfGR15PuE6pY3aB",
           "/dns4/ws-star.discovery.cybernode.ai/tcp/443/wss/p2p-webrtc-star",
@@ -74,7 +116,7 @@ const configIpfs = (nodeId) => {
         "/dns4/ws-star.discovery.cybernode.ai/tcp/4430/wss/p2p/QmUgmRxoLtGERot7Y6G7UyF6fwvnusQZfGR15PuE6pY3aB",
       ],
       Pubsub: {
-        PubSubRouter: "gossipsub", // <-- added
+        // PubSubRouter: "gossipsub", // <-- added
         Enabled: true,
       },
       Swarm: {
@@ -94,19 +136,21 @@ const configIpfs = (nodeId) => {
         Type: "dhtclient",
       },
     },
-    libp2p: {
-      transports: [
-        // This is added for local demo!
-        // In a production environment the default filter should be used
-        // where only DNS + WSS addresses will be dialed by websockets in the browser.
-        webSockets({
-          filter: filters.all,
-        }),
-      ],
-      nat: {
-        enabled: true,
-      },
-    },
+    libp2p: nodeLibp2p,
+
+    // libp2p: {
+    //   transports: [
+    //     // This is added for local demo!
+    //     // In a production environment the default filter should be used
+    //     // where only DNS + WSS addresses will be dialed by websockets in the browser.
+    //     webSockets({
+    //       filter: filters.all,
+    //     }),
+    //   ],
+    //   nat: {
+    //     enabled: true,
+    //   },
+    // },
     EXPERIMENTAL: {
       ipnsPubsub: true,
     },

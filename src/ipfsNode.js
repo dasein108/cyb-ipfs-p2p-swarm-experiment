@@ -65,7 +65,10 @@ function IpfsNode({ nodeId }) {
 
         ipfs.current = await create(configIpfs(nodeId));
         await connectToSwarm(ipfs.current, CYBERNODE_SWARM_ADDR);
-
+        // await connectToSwarm(
+        //   ipfs.current,
+        //   "/dns4/ws-star.discovery.cybernode.ai/tcp/443/wss/p2p-webrtc-star"
+        // );
         const id = await ipfs.current.id();
         setPeerMap(nodeId, id.id.toString());
 
