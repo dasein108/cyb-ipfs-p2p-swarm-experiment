@@ -9,6 +9,7 @@ import configIpfs from "./configIpfs.js";
 
 import { getPeerAlias, setPeerMap } from "./peerMap.js";
 // import { connectToSwarm } from "./utils";
+
 const CYBERNODE_SWARM_ADDR =
   "/dns4/swarm.io.cybernode.ai/tcp/443/wss/p2p/QmUgmRxoLtGERot7Y6G7UyF6fwvnusQZfGR15PuE6pY3aB";
 
@@ -63,10 +64,10 @@ function IpfsNode({ nodeId, workerPort }) {
         // if (!peerId) {
         //   console.log(`Map RANDOM peer ${peerId} to ${nodeId}`);
         // }
-        const ipfs = await create(configIpfs(nodeId));
+
         ipfs.current = IPFSClient.from(workerPort);
 
-        // await connectToSwarm(ipfs.current, CYBERNODE_SWARM_ADDR);
+        await connectToSwarm(ipfs.current, CYBERNODE_SWARM_ADDR);
         console.log("----ipfs.current", ipfs.current);
         const id = await ipfs.current.id();
         setPeerMap(nodeId, id.id.toString());

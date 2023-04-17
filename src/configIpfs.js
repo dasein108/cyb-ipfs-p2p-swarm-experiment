@@ -74,7 +74,7 @@ const configIpfs = (nodeId) => {
         "/dns4/ws-star.discovery.cybernode.ai/tcp/4430/wss/p2p/QmUgmRxoLtGERot7Y6G7UyF6fwvnusQZfGR15PuE6pY3aB",
       ],
       Pubsub: {
-        PubSubRouter: "gossipsub", // <-- added
+        // PubSubRouter: "gossipsub", // <-- added
         Enabled: true,
       },
       Swarm: {

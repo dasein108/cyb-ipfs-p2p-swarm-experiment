@@ -1,7 +1,19 @@
 import { create } from "ipfs-core";
 import { Server, IPFSService } from "ipfs-message-port-server";
 import configIpfs from "./configIpfs.js";
+import adapter from "webrtc-adapter";
+
 const main = async () => {
+  console.log(
+    "----adap",
+    adapter.browserDetails,
+    self,
+    adapter,
+    adapter.commonShim,
+    adapter.browserShim
+  );
+  adapter.commonShim.shimRTCIceCandidate(self);
+  adapter.commonShim.shimConnectionState(self);
   console.info("Running SharedWorker...");
   // start listening to all the incoming connections (browsing contexts that
   // which run new SharedWorker...)
@@ -11,10 +23,14 @@ const main = async () => {
 
   // Start an IPFS node & create server that will expose it's API to all clients
   // over message channel.
+  const nodeId = "Neuron.0";
+
   const ipfs = await create(configIpfs(nodeId));
+  console.log("IPFS Started", await ipfs.id());
   const service = new IPFSService(ipfs);
   const server = new Server(service);
 
+  console.log("------", ipfs, service, server, connections);
   // connect every queued and future connection to the server.
   for await (const event of connections) {
     const port = event.ports[0];
