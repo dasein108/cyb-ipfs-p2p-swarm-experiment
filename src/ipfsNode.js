@@ -35,7 +35,11 @@ const PUB_SUB_TOPIC = "cyber";
 const subscribePubSub = async (ipfs, callback) => {
   const receiveMsg = (msg) => {
     console.log("received msg: ", msg);
-    callback(new TextDecoder().decode(msg.data));
+    callback(
+      `${getPeerAlias(msg.from.toString())}:  ${new TextDecoder().decode(
+        msg.data
+      )}`
+    );
   };
   // console.log(new TextDecoder().decode(msg.data));
 
