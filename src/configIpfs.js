@@ -152,17 +152,11 @@ const configIpfs = (nodeId) => {
         Enabled: true,
       },
       Swarm: {
-        // AddrFilters: null,
         ConnMgr: {
-          // GracePeriod: '300s',
           HighWater: 300,
           LowWater: 50,
-          // Type: 'basic',
         },
-        // DisableBandwidthMetrics: false,
         DisableNatPortMap: false,
-        // EnableAutoRelay: false,
-        // EnableRelayHop: false,
       },
       Routing: {
         Type: "dhtclient",
