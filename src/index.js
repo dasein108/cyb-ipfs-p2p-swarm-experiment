@@ -15,6 +15,9 @@ import "./index.css";
 // }
 // generatePeerMap();
 
+// enable debug og libp2p
+localStorage.setItem("debug", "libp2p:*");
+
 ReactDOM.render(
   <React.StrictMode>
     <div className="grid">
