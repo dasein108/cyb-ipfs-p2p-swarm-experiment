@@ -67,7 +67,7 @@ export const setPeerMap = (name, peerId) => {
 export const getPeerIdByAlias = (aliasName) => peerMap[aliasName] || undefined;
 
 export const getNodePeersByAlias = (name, length) => {
-  return Array.from({ length }, (v, i) => `${name}.${i}`);
+  return Array.from({ length }, (v, i) => `${name}${i}`);
 };
 
 export async function generatePeerId() {

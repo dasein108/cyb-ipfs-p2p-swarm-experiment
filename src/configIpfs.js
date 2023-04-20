@@ -56,7 +56,7 @@ const nodeLibp2p = (opts) => {
     dht: kadDHT(),
     // transports: [webRTC.transport, ws, webRTCDirect(), webTransport()],
     transports: [
-      webSockets(),
+      webSockets({ filters: filters.all }),
       wrtcStar.transport,
       webRTCDirect(),
       // circuitRelayTransport(),
@@ -101,12 +101,7 @@ const configIpfs = (nodeId) => {
       API: {
         HTTPHeaders: {
           "Access-Control-Allow-Methods": ["PUT", "POST"],
-          "Access-Control-Allow-Origin": [
-            "http://localhost:3000",
-            "http://127.0.0.1:5001",
-            "http://127.0.0.1:8888",
-            "http://localhost:8888",
-          ],
+          "Access-Control-Allow-Origin": ["*"],
         },
       },
       Addresses: {

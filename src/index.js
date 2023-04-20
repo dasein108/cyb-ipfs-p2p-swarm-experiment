@@ -5,7 +5,7 @@ import "tachyons";
 import "ipfs-css";
 import { myPeers } from "./myPeers";
 import IpfsNode from "./ipfsNode";
-
+import RtcDemo from "./rtcDemo";
 import "./index.css";
 
 // import { generatePeerMapFromAliases } from "./peerMap";
@@ -19,12 +19,15 @@ import "./index.css";
 localStorage.setItem("debug", "libp2p:*");
 
 ReactDOM.render(
-  <React.StrictMode>
-    <div className="grid">
+  // <React.StrictMode>
+  <div>
+    {/* <div className="grid">
       {myPeers.map((name) => (
         <IpfsNode nodeId={name} />
       ))}
-    </div>
-  </React.StrictMode>,
+    </div> */}
+    <RtcDemo clientId={"client1"} />
+  </div>,
+  // </React.StrictMode>,
   document.getElementById("root")
 );

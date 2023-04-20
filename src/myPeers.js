@@ -1,3 +1,3 @@
 import { getNodePeersByAlias } from "./peerMap";
 
-export const myPeers = getNodePeersByAlias("Neuron", 3);
+export const myPeers = getNodePeersByAlias("Neuron", 1);

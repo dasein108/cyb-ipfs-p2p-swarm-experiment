@@ -27,8 +27,10 @@ export const connectToSwarm = async (node, address) => {
         Object.getOwnPropertyNames(err),
         err.stack,
         err.errors,
-        err.message
+        err.message,
+        err.isTrusted,
+        err.code
       );
-      console.log(`Can't connect to swarm ${address}: ${err.message}`);
+      console.log(`Can't connect to swarm ${address}: ${JSON.stringify(err)}`);
     });
 };

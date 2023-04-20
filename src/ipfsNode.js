@@ -75,6 +75,9 @@ function IpfsNode({ nodeId }) {
   };
 
   const getContent = async (cid) => {
+    for await (const provider of ipfs.current.dht.findProvs(cid)) {
+      console.log("provider", provider);
+    }
     const result = await getIpfsContent(ipfs.current, cid);
     setLog((log) => [...log, `${cid}=>${result}`]);
   };
@@ -96,23 +99,29 @@ function IpfsNode({ nodeId }) {
         );
         // await connectToSwarm(
         //   ipfs.current,
-        //   "/dns4/ws-star.discovery.cybernode.ai/tcp/443/wss/p2p-webrtc-star"
+        //   "/dns4/ws-star.discovery.cybernode.ai/tcp/443/wss/p2p-webrtc-star/p2p/12D3KooWPe6nKmNbkrJeQf4RUUw7ZhoMrNR3StYVFKaGKiVQzCoP"
         // );
+
+        await connectToSwarm(
+          ipfs.current,
+          "/dns4/daseincore.tech/tcp/4003/wss/p2p/12D3KooWS9usCuXz8ZkNEAMcTyW956EuSPLevEsYDDnDpmA5M7kj"
+        );
         const id = await ipfs.current.id();
         console.log("IPFS Started", id.id.toString());
+        window[nodeId] = ipfs.current;
         setPeerMap(nodeId, id.id.toString());
 
-        ipfs.current.libp2p.addEventListener("peer:discovery", (evt) => {
-          // dial them when we discover them
-          ipfs.current.libp2p
-            .dial(evt.detail.id)
-            .then((res) => {
-              console.log(`---Dial is ok ${res.remotePeer.toString()}`, res);
-            })
-            .catch((err) => {
-              console.debug(`Could not dial ${evt.detail.id}`, err);
-            });
-        });
+        // ipfs.current.libp2p.addEventListener("peer:discovery", (evt) => {
+        //   // dial them when we discover them
+        //   ipfs.current.libp2p
+        //     .dial(evt.detail.id)
+        //     .then((res) => {
+        //       console.log(`---Dial is ok ${res.remotePeer.toString()}`, res);
+        //     })
+        //     .catch((err) => {
+        //       console.debug(`Could not dial ${evt.detail.id}`, err);
+        //     });
+        // });
 
         ipfs.current.libp2p.addEventListener("peer:connect", (evt) => {
           const peerId = evt.detail.remotePeer.toString();
