@@ -1,0 +1,10 @@
+version: "3.8"
+services:
+  relay:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "4441:4441"
+    command: "node relay.js"

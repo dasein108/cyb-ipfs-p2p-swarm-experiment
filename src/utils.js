@@ -28,6 +28,9 @@ export const connectToSwarm = async (node, address) => {
         err.stack,
         err.errors,
         err.message,
+        err.code,
+        err.name,
+        err.props,
         err.isTrusted,
         err.code
       );

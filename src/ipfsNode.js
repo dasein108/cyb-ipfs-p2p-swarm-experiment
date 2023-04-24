@@ -2,7 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { create } from "ipfs-core";
 import { toString as uint8ArrayToAsciiString } from "uint8arrays/to-string";
 import { concat as uint8ArrayConcat } from "uint8arrays/concat";
-
+import EditWithAction from "./components/EditWithAction";
+import { ListView } from "./components/ListView";
+import { Title } from "./components/Title";
 import configIpfs from "./configIpfs";
 
 import { getPeerAlias, setPeerMap } from "./peerMap";
@@ -75,9 +77,13 @@ function IpfsNode({ nodeId }) {
   };
 
   const getContent = async (cid) => {
-    for await (const provider of ipfs.current.dht.findProvs(cid)) {
-      console.log("provider", provider);
-    }
+    // for await (const provider of ipfs.current.dht.findProvs(cid)) {
+    //   console.log("provider", provider);
+    // }
+
+    // const dagNode = await ipfs.current.dag.get(cid);
+    // console.log("--dagNode", dagNode);
+
     const result = await getIpfsContent(ipfs.current, cid);
     setLog((log) => [...log, `${cid}=>${result}`]);
   };
@@ -93,19 +99,19 @@ function IpfsNode({ nodeId }) {
         // }
 
         ipfs.current = await create(configIpfs(nodeId));
+        window[nodeId] = ipfs.current;
         await connectToSwarm(ipfs.current, CYBERNODE_SWARM_ADDR);
-        await subscribePubSub(ipfs.current, (msg) =>
-          setMsgs((msgs) => [...msgs, msg])
-        );
-        // await connectToSwarm(
-        //   ipfs.current,
-        //   "/dns4/ws-star.discovery.cybernode.ai/tcp/443/wss/p2p-webrtc-star/p2p/12D3KooWPe6nKmNbkrJeQf4RUUw7ZhoMrNR3StYVFKaGKiVQzCoP"
-        // );
 
         await connectToSwarm(
           ipfs.current,
-          "/dns4/daseincore.tech/tcp/4003/wss/p2p/12D3KooWS9usCuXz8ZkNEAMcTyW956EuSPLevEsYDDnDpmA5M7kj"
+          "/dns4/daseincore.tech/tcp/443/wss/p2p/12D3KooWS9usCuXz8ZkNEAMcTyW956EuSPLevEsYDDnDpmA5M7kj"
         );
+        // /p2p-circuit
+        // /p2p-circuit/p2p/12D3KooWS9usCuXz8ZkNEAMcTyW956EuSPLevEsYDDnDpmA5M7kj
+        await subscribePubSub(ipfs.current, (msg) =>
+          setMsgs((msgs) => [...msgs, msg])
+        );
+
         const id = await ipfs.current.id();
         console.log("IPFS Started", id.id.toString());
         window[nodeId] = ipfs.current;
@@ -171,17 +177,17 @@ function IpfsNode({ nodeId }) {
           </h1>
           <div className="pa2">{id && <IpfsId obj={id} keys={["id"]} />}</div>
           <div>
-            <IpfsAction
+            <EditWithAction
               title="Content"
               buttonTitle={"->Ipfs"}
               callback={addContent}
             />
-            <IpfsAction
+            <EditWithAction
               title="CID"
               buttonTitle={"get content"}
               callback={getContent}
             />
-            <IpfsAction
+            <EditWithAction
               title="PubSub Msg"
               buttonTitle={"send msg"}
               callback={addPubSub}
@@ -207,49 +213,6 @@ function IpfsNode({ nodeId }) {
     </div>
   );
 }
-
-const IpfsAction = ({ title, buttonTitle, callback }) => {
-  const [content, setContent] = useState("");
-  const onClick = async () => {
-    callback(content);
-    setContent("");
-  };
-  return (
-    <>
-      <div className="measure">
-        <label className="f6 b db mb2">{title}</label>
-        <div className="button-wrap">
-          <input
-            className="input-reset ba b--black-20 pa2 mb2 db w-70"
-            type="text"
-            value={content}
-            onChange={(event) => setContent(event.target.value)}
-          />
-          <button className="action" onClick={onClick}>
-            {buttonTitle}
-          </button>
-        </div>
-      </div>
-    </>
-  );
-};
-
-const ListView = ({ nodeId, items, title, mapper }) => (
-  <>
-    <Title>{title}</Title>
-    <div className="bg-white f7 pa1 br2 truncate monospace">
-      {items.map((p, i) => (
-        <div className="f7 pa0" key={`${nodeId}-${title}-${i}`}>
-          {mapper ? mapper(p) : p}
-        </div>
-      ))}
-    </div>
-  </>
-);
-
-const Title = ({ children }) => {
-  return <h2 className="f7 ma0 pb2 aqua fw4 montserrat">{children}</h2>;
-};
 
 const IpfsId = ({ keys, obj }) => {
   if (!obj || !keys || keys.length === 0) return null;
