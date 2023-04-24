@@ -3,7 +3,8 @@ import { multiaddr, protocols } from "@multiformats/multiaddr";
 import { pushable } from "it-pushable";
 import { pipe } from "it-pipe";
 import { fromString, toString } from "uint8arrays";
-import { createNodeLibp2p, nodeLibp2pFactory } from "./createNodeLibp2p";
+import { nodeLibp2pFactory } from "./createNodeLibp2p";
+import { getPeerIdByAlias, getPeerAliasByPeerId } from "./peerMap";
 
 // import EditWithAction from "./component/EditWithAction";
 import EditWithAction from "./components/EditWithAction";
@@ -62,13 +63,11 @@ function CircuitRelayTest({ nodeId = "libp2p" }) {
   useEffect(() => {
     async function startNode() {
       try {
-        node.current = await nodeLibp2pFactory(); // await createNodeLibp2p();
+        const peerId = await getPeerIdByAlias(nodeId);
+        node.current = await nodeLibp2pFactory(peerId); // await createNodeLibp2p();
         window[nodeId] = node.current;
-
-        const id = node.current.peerId.toString();
-        setId(id);
-
-        console.log("Libp2p Started", id);
+        setId(peerId);
+        console.log("Libp2p Started", peerId);
         window[nodeId] = node.current;
 
         function updateConnList() {
@@ -81,7 +80,6 @@ function CircuitRelayTest({ nodeId = "libp2p" }) {
               return [];
             }
           });
-          console.log("--> Connections:", connList);
           setConnections(connList);
         }
 
@@ -96,11 +94,11 @@ function CircuitRelayTest({ nodeId = "libp2p" }) {
           "change:multiaddrs",
           (event) => {
             const { peerId } = event.detail;
-            console.log(
-              "------change multiaddr",
-              event,
-              node.current.getMultiaddrs()
-            );
+            // console.log(
+            //   "------change multiaddr",
+            //   event,
+            //   node.current.getMultiaddrs()
+            // );
             if (
               node.current.getMultiaddrs().length === 0 ||
               !node.current.peerId.equals(peerId)
@@ -113,11 +111,11 @@ function CircuitRelayTest({ nodeId = "libp2p" }) {
                 if (ma.protos().pop()?.name === "p2p") {
                   ma = ma.decapsulateCode(protocols("p2p").code);
                 }
-                console.log(
-                  "---change multiaddr",
-                  ma.toString(),
-                  node.current.peerId.toString()
-                );
+                // console.log(
+                //   "---change multiaddr",
+                //   ma.toString(),
+                //   node.current.peerId.toString()
+                // );
                 const newWebrtcDirectAddress = multiaddr(
                   ma.toString() + "/webrtc/p2p/" + node.current.peerId
                 );
@@ -134,7 +132,6 @@ function CircuitRelayTest({ nodeId = "libp2p" }) {
           }
         );
         await node.current.handle("/echo/1.0.0", ({ stream }) => {
-          console.log("incoming stream");
           pipe(
             stream,
             async function* (source) {
@@ -157,21 +154,20 @@ function CircuitRelayTest({ nodeId = "libp2p" }) {
     }
 
     startNode();
-  }, []);
+  }, [nodeId]);
 
   return (
     <div className="sans-serif">
       <main>
         <section className="bg-snow mh1 mt1 pa1">
           <h1 className="f5 fw4 ma0 pv3 aqua montserrat" data-test="title">
-            {nodeId}
+            {`${nodeId} [${id}]`}
           </h1>
-
-          <Title>{`ID: ${id}`}</Title>
-          <div>
+          <div className="f7 pb2">
             <span>Addr: </span>
             <span>{webrtcDirectAddress}</span>
             <button
+              className="ml1"
               href="#"
               onClick={() => navigator.clipboard.writeText(webrtcDirectAddress)}
             >

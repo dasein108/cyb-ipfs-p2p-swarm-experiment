@@ -7,7 +7,7 @@ import { ListView } from "./components/ListView";
 import { Title } from "./components/Title";
 import configIpfs from "./configIpfs";
 
-import { getPeerAlias, setPeerMap } from "./peerMap";
+import { getPeerAliasByPeerId, setPeerMap } from "./peerMap";
 import { connectToSwarm } from "./utils";
 
 const CYBERNODE_SWARM_ADDR =
@@ -38,9 +38,9 @@ const subscribePubSub = async (ipfs, callback) => {
   const receiveMsg = (msg) => {
     console.log("received msg: ", msg);
     callback(
-      `${getPeerAlias(msg.from.toString())}:  ${new TextDecoder().decode(
-        msg.data
-      )}`
+      `${getPeerAliasByPeerId(
+        msg.from.toString()
+      )}:  ${new TextDecoder().decode(msg.data)}`
     );
   };
   // console.log(new TextDecoder().decode(msg.data));
@@ -133,7 +133,9 @@ function IpfsNode({ nodeId }) {
           const peerId = evt.detail.remotePeer.toString();
           setPeers((peers) => [...peers, peerId]);
           console.log(
-            `Connected ${nodeId} <-> ${getPeerAlias(peerId)} ${ellapsedTime()}s`
+            `Connected ${nodeId} <-> ${getPeerAliasByPeerId(
+              peerId
+            )} ${ellapsedTime()}s`
           );
         });
 
@@ -141,7 +143,7 @@ function IpfsNode({ nodeId }) {
           const peerId = evt.detail.remotePeer.toString();
           setPeers((peers) => peers.filter((p) => p !== peerId));
           console.log(
-            `Disconnected ${nodeId} -x- ${getPeerAlias(
+            `Disconnected ${nodeId} -x- ${getPeerAliasByPeerId(
               peerId
             )} ${ellapsedTime()}s`
           );
@@ -199,13 +201,13 @@ function IpfsNode({ nodeId }) {
               nodeId={nodeId}
               title="Peers"
               items={peers}
-              mapper={getPeerAlias}
+              mapper={getPeerAliasByPeerId}
             />
             <ListView
               nodeId={nodeId}
               title="Swarm"
               items={swarmPeers}
-              mapper={getPeerAlias}
+              mapper={getPeerAliasByPeerId}
             />
           </div>
         </section>

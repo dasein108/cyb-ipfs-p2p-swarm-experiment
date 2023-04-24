@@ -1,7 +1,22 @@
+const webpack = require("webpack");
+
 module.exports = {
   webpack: {
+    plugins: {
+      add: [
+        new webpack.ProvidePlugin({
+          Buffer: ["buffer", "Buffer"],
+        }),
+      ],
+    },
     configure: (config) => ({
       ...config,
+
+      resolve: {
+        fallback: {
+          buffer: require.resolve("buffer"),
+        },
+      },
       module: {
         ...config.module,
         rules: config.module.rules.map((rule) => {

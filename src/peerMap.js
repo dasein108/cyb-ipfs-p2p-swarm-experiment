@@ -1,6 +1,6 @@
 // const PeerId = require("peer-id");
 import { createEd25519PeerId } from "@libp2p/peer-id-factory";
-// import { peerIdFromString } from "@libp2p/peer-id";
+import { peerIdFromKeys } from "@libp2p/peer-id";
 
 const peerAliases = [
   "Cassiopea",
@@ -16,60 +16,104 @@ const peerAliases = [
   "Carbon",
   "Neuron",
 ];
-// export const peerMap = {
-//   "Cassiopea.0": "12D3KooWMXvPki5sP2Ybbsged7WQuZS5rprhQ1YuEynyJbgdHeyj",
-//   "Cassiopea.1": "12D3KooWA1xNnRL6JcG7uJDu3E5ShJNRdcfXNSFw85KAX4Am31KG",
-//   "Cassiopea.2": "12D3KooWK8SJfXzDkX4p7e2iezhguxbgQaMMXJkYh71KQumUeeV4",
-//   "Venus.0": "12D3KooWAjmW9QiqGwYP6TSJZfno4jRyGZ2aMdKjeYxWszrs7TDu",
-//   "Venus.1": "12D3KooWRijF7UxJFHnS5CQP1LNdnTZPnXgxp8vNn53KNFwt7yrN",
-//   "Venus.2": "12D3KooWAVt28wVewhBsfZmoZdi9PvFQyihy3YtHtnBbctu6ah4N",
-//   "Moon.0": "12D3KooWK7vzhgL8yu3RvNAP8jhLR7PXmheqdHMPskQNDdnvTZ78",
-//   "Moon.1": "12D3KooWJMYAHhRg5LN6zsAYDqBWT5RRjitzK5Aft5UfrZfBK7A3",
-//   "Moon.2": "12D3KooWRPbkQ4J9w4T6AG3gXr9vMqimH7RjTF8UoGwMrcjyvGKU",
-//   "Earth.0": "12D3KooWGUDwBpWzmUKnQeyjEN39jH6wbDQYVusHZU61gXTGZkCV",
-//   "Earth.1": "12D3KooWA4nJ9HSBYGnExsneXgy5xsTtQx6DkbYftbZftB5fAiBm",
-//   "Earth.2": "12D3KooWGWi1W1N1HTKNKTWtPc59RMM5D3Y5JomnDPpxbXyQVdx4",
-//   "Pluto.0": "12D3KooWRaLLywc4VstgbPYFoJDZ67gMgKLqTj7Rq8WcSp3uDgLF",
-//   "Pluto.1": "12D3KooWE3piPMAwuTfqKhaucApVRVumA3dReDKiGKzCcBQ6Dwgt",
-//   "Pluto.2": "12D3KooWFYqyQvCJEfWNcuXuReA8qLFRdHWeK1SkF1Wqngf5Gd6k",
-//   "Saturn.0": "12D3KooWK6kMo9mGjCs8kuGMWS17fJp2L2rjgfA1WomLGkz8YDqo",
-//   "Saturn.1": "12D3KooWK5N2xrxdM7jxjzg77xy9XCPuW87DdnN3TuYaetrqrrjs",
-//   "Saturn.2": "12D3KooWSYjCNYGBzU8W2EvKwGx5pj8nsefXMitQv473xPwSLgGK",
-//   "Sputnik.0": "12D3KooWLEB9Z73Zxt8Vzwbye6gNk7LJ7a87VxszCXEjdh43gWGo",
-//   "Sputnik.1": "12D3KooWCBE1AfD6bmzbKjxGrwXNjJyKxBUcehBpK4K2g1fwMkdj",
-//   "Sputnik.2": "12D3KooWLaKuhnUsV6gFQoCy4yVxdACpTJrCoZyUSURG3GTXGnL2",
-//   "Sun.0": "12D3KooWJ37tgHiDpxnxmLo3pLyQGEg93Y7SnfZYM1kiDy3ppcor",
-//   "Sun.1": "12D3KooWGDeQoVhKVKcQj3wDygoiUY3JgCzhd5S2Wf9r4CzGAVns",
-//   "Sun.2": "12D3KooWNXB3pVH57peAWda7C7YBqrBnk19rf3WJ4cPz7XM4ZVnG",
-//   "Punk.0": "12D3KooWNhJzNNdDyQjGXdKqc5GgTg3WeD7MVefdC9cdJxjnWTBR",
-//   "Punk.1": "12D3KooWNcyvX4BTJEbG3eouLCeXStAgAuQoPdAn2LUhiP34HJXL",
-//   "Punk.2": "12D3KooWPqHhdBek6nDfWRPsDWZavckyoE6SrfrNZhX8RAFHNcfD",
-//   "Human.0": "12D3KooWCy3eLjqYoCSJUFpWPB42sVeeZhRrWpN99Mip6sevSY3t",
-//   "Human.1": "12D3KooWL4qNvBjNPCKqeMkQG2x9x2EyV4aYrMdyS4PPsPzAcgyW",
-//   "Human.2": "12D3KooWSJwEU5szEf9bcYEL9i23uzazTpXTEdfQGAR6aKmXx8BN",
-//   "Carbon.0": "12D3KooWQAacQLZB9vz3sYGaNZUoArhQkWUaQPWTxuofMwSkWDTq",
-//   "Carbon.1": "12D3KooWDtcW9rQ4oWk9xSWEfBeBuNhcXbN4hBfJSAHybqDbaVF6",
-//   "Carbon.2": "12D3KooWGNzuTdU22GKiZTM4ngcLHTKGkmrjTbZphcAUb381Ku6n",
-//   "Neuron.0": "12D3KooWEHp4mu8NFpoepqUy8JSrg7kRDwpHpiC2Z2byxQzqm21H",
-//   "Neuron.1": "12D3KooWQPwvTS2KbkerVB11QNEc9e1fnLgbMEGH6PQgN9hHu5gt",
-//   "Neuron.2": "12D3KooWRpsR9EM5RU4tHS6hFdtFTEHLtBxAYaEdkRJ6YuBiF8LE",
-// };
+export const peerMap = {
+  Cassiopea0: {
+    id: "12D3KooWLM2r7aoj7HP5bzEw2X7xjKJ42hAVVr96gNnYUEhWtJDu",
+    privateKey:
+      "CAESQFqVh8g0GMoMb4PXsnKP3dTMgI0QRM14DyT6hp8i6ElbnHAHHNjknj4F688qAWA7gb+I1UGgnHtRu5P/Wgwzrdg=",
+    publicKey: "CAESIJxwBxzY5J4+BevPKgFgO4G/iNVBoJx7UbuT/1oMM63Y",
+  },
+  Venus0: {
+    id: "12D3KooWQ4HNDBMUVyu9z5cpMn4tJU8ZZNYPBGbzEyv397y8roL7",
+    privateKey:
+      "CAESQKiBz8dmf6ZKyIrfToobC2v/GqM0D/bSXgjgA8uJpVkm05RRfPY//HuujNqr6MFfrBRjMGSYDO3rJY9P3Q9m7mQ=",
+    publicKey: "CAESINOUUXz2P/x7rozaq+jBX6wUYzBkmAzt6yWPT90PZu5k",
+  },
+  Moon0: {
+    id: "12D3KooWHWkSUfjAdpUXuCkWMjKzQN4TRHeax6h5KLnRfC7DToCN",
+    privateKey:
+      "CAESQHFhlnzGkyNzylh/4nDqKbz6Cwpd00xFyFyWEFnHMC6Cclo5GaXNlIvaF70V/sQ9q2A8Kc3WwFF6hVqFHXCvn1s=",
+    publicKey: "CAESIHJaORmlzZSL2he9Ff7EPatgPCnN1sBReoVahR1wr59b",
+  },
+  Earth0: {
+    id: "12D3KooWEyCYAEZkrSjkUL9NzWTHvXRFQGKCVD3U6jnEc6dn8k3E",
+    privateKey:
+      "CAESQNqiSZaZo0l0Ott85NLEFPvz0zCQpuFj5cfkNB0NPkQlTI3FuiUt2F2n/MFPE0BzKF+c+g5M/tJ7J/Oi46mtULU=",
+    publicKey: "CAESIEyNxbolLdhdp/zBTxNAcyhfnPoOTP7SeyfzouOprVC1",
+  },
+  Pluto0: {
+    id: "12D3KooWPkJof1SZuo4J8SvVZiVfHtcw9Rsb4TWPqve4gPJfseEz",
+    privateKey:
+      "CAESQJT/osJe7ZHxJLB4ymw+955U3xF85XOKsehvRA+lXbrmzvl9keCWGeoXxp4RS8ZSeJa67B88i5fDw9Rxs3YgwS8=",
+    publicKey: "CAESIM75fZHglhnqF8aeEUvGUniWuuwfPIuXw8PUcbN2IMEv",
+  },
+  Saturn0: {
+    id: "12D3KooWJD9ehEeWoUZffVa9opCqjsZDn5enn8DRMQjKEgksmsMC",
+    privateKey:
+      "CAESQLZ2We3ulflr98zUuzvosy+N5qPGpspRdatMdEXX8RKYfLOzIzwcfkyWSALI6kXaHzxUoZKQjhszksGfBKicUbs=",
+    publicKey: "CAESIHyzsyM8HH5MlkgCyOpF2h88VKGSkI4bM5LBnwSonFG7",
+  },
+  Sputnik0: {
+    id: "12D3KooWAdKTW43gwWCZb15mask61k6ogNM31hSMkJABzHdPqjwd",
+    privateKey:
+      "CAESQLl7/LlY2fcZDG4llZIZUkaW01zEGexnT8Wu6SyD0AUBDAc7i3hZRTyuHX87Qf0lVGzab3pijbLA4QsOKTvx8Cg=",
+    publicKey: "CAESIAwHO4t4WUU8rh1/O0H9JVRs2m96Yo2ywOELDik78fAo",
+  },
+  Sun0: {
+    id: "12D3KooWGfrgiHHSqoS87M6Pi9wzoRJL4QERsufm7jXMQbc2nPNM",
+    privateKey:
+      "CAESQE3OBbFEH0gGd5vAd4T2Nb82kIIm0PdHpH8hI6p8QLklZdPTO6DqmR+412cr9yePDH0r6e2U4ncc6ephR9pHvuY=",
+    publicKey: "CAESIGXT0zug6pkfuNdnK/cnjwx9K+ntlOJ3HOnqYUfaR77m",
+  },
+  Punk0: {
+    id: "12D3KooWFnGdvq2dVzGhVxzmUpUE8naBE32e1e8VVkxPqNpAqSWH",
+    privateKey:
+      "CAESQE99VcHhgjVOZintn7EwuqF9qOy4NkYT+UyWtb7eK3MOWJy0py210Yh9ZihN7fSyLT+HAlq2//hYQFemTOT6l9Y=",
+    publicKey: "CAESIFictKcttdGIfWYoTe30si0/hwJatv/4WEBXpkzk+pfW",
+  },
+  Human0: {
+    id: "12D3KooWD1cXb6LdGCDHFCJvzKTaNHeaK4rWF7SGe7NMxHuNvqLm",
+    privateKey:
+      "CAESQMJGFUyCL6s58NjycNTc4UwtDSK22qGiW7miz3UZhpTGL3Svlhd18drph+stwAQn2qeBlXFzN0kNw51UYoYrp9I=",
+    publicKey: "CAESIC90r5YXdfHa6YfrLcAEJ9qngZVxczdJDcOdVGKGK6fS",
+  },
+  Carbon0: {
+    id: "12D3KooWSTHfa9pN2vDTCx2UdpECpYzb5NtMTuBXoNDFqFUnod1a",
+    privateKey:
+      "CAESQAUMkjIVfbZvV2PD8idte/RFRnz0qsd96PW2+m+0CYBk9zBjpQv8Mu0uD5Ih+AeDAYKcA3M794xQOYawbuy2OZE=",
+    publicKey: "CAESIPcwY6UL/DLtLg+SIfgHgwGCnANzO/eMUDmGsG7stjmR",
+  },
+  Neuron0: {
+    id: "12D3KooWE3yj6jibgZcxMb6hrpQGKRE9xaqAazFkYaJZDZengzHq",
+    privateKey:
+      "CAESQB9Xr4AtsQX7Ls0CFDGcqjrj3sZsDimxZTUWwCCeeHcOPuuA7LeV+9yOoJLW6jbBT7wNp3MxJYaT1qpgoIDxZNw=",
+    publicKey: "CAESID7rgOy3lfvcjqCS1uo2wU+8DadzMSWGk9aqYKCA8WTc",
+  },
+};
 
-const peerMap = {};
-
-const revPeerMap = {};
+const revPeerMap = Object.fromEntries(
+  Object.entries(peerMap).map(([k, v]) => [v, k])
+);
 
 export const setPeerMap = (name, peerId) => {
   peerMap[name] = peerId;
   revPeerMap[peerId] = name;
 };
 
-export const getPeerIdByAlias = (aliasName) => peerMap[aliasName] || undefined;
-
 export const getNodePeersByAlias = (name, length) => {
   return Array.from({ length }, (v, i) => `${name}${i}`);
 };
 
+export const getPeerIdByAlias = (alias) => {
+  return peerIdFromKeys(
+    Buffer.from(peerMap[alias].publicKey, "base64"),
+    Buffer.from(peerMap[alias].privateKey, "base64")
+  );
+};
+
+export const getPeerAliasByPeerId = (peerId) => revPeerMap[peerId] || peerId;
+
+// Generate peers
 export async function generatePeerId() {
   return await createEd25519PeerId({ bits: 2048 });
 }
@@ -77,19 +121,17 @@ export async function generatePeerId() {
 export const generatePeerMapFromAliases = async (count) => {
   let result = {};
   peerAliases.forEach(async (name) => {
-    getNodePeersByAlias(name, 3).forEach((name) => (result[name] = null));
+    getNodePeersByAlias(name, count).forEach((name) => (result[name] = null));
   });
 
   for await (const name of Object.keys(result)) {
     const peerId = await generatePeerId();
-    result[name] = peerId.toString();
+    result[name] = {
+      id: peerId.toString(),
+      privateKey: Buffer.from(peerId.privateKey).toString("base64"),
+      publicKey: Buffer.from(peerId.publicKey).toString("base64"),
+    };
   }
   console.log(JSON.stringify(result));
   return result;
 };
-
-// const revPeerMap = Object.fromEntries(
-//   Object.entries(peerMap).map(([k, v]) => [v, k])
-// );
-
-export const getPeerAlias = (peerId) => revPeerMap[peerId] || peerId;

@@ -31,8 +31,9 @@ import { webRTC } from "@libp2p/webrtc";
 //   //   protocol: 'wss',
 //   // },
 // });
-export const nodeLibp2pFactory = async () =>
+export const nodeLibp2pFactory = async (peerId) =>
   await createLibp2p({
+    peerId,
     transports: [
       webSockets({
         filter: filters.all,

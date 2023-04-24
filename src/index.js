@@ -3,16 +3,12 @@ import ReactDOM from "react-dom";
 
 import "tachyons";
 import "ipfs-css";
-import { myPeers } from "./myPeers.js";
-import IpfsNode from "./ipfsNode.js";
 // import RtcDemo from "./components/rtcDemo/rtcDemo";
 import "./index.css";
-import CircuitRelayTest from "./CircuitRelayTest.js";
-
-// import { generatePeerMapFromAliases } from "./peerMap";
-
+import App from "./App.js";
+// import { generatePeerMapFromAliases, peerMap } from "./peerMap";
 // async function generatePeerMap() {
-//   await generatePeerMapFromAliases(3);
+//   await generatePeerMapFromAliases(1);
 // }
 // generatePeerMap();
 
@@ -20,16 +16,9 @@ import CircuitRelayTest from "./CircuitRelayTest.js";
 localStorage.setItem("debug", "libp2p:*");
 
 ReactDOM.render(
-  // <React.StrictMode>
   <div>
-    <CircuitRelayTest />
-    <div className="grid">
-      {/* {myPeers.map((name) => (
-        <IpfsNode nodeId={name} />
-      ))} */}
-    </div>
+    <App />
     {/* <RtcDemo clientId={"client1"} /> */}
   </div>,
-  // </React.StrictMode>,
   document.getElementById("root")
 );
