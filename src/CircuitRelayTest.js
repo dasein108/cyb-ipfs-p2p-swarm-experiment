@@ -12,13 +12,9 @@ import { Title } from "./components/Title";
 
 const CIRCUIT_RELAY_CODE = 290;
 const WEBRTC_CODE = 281;
-// /ip4/127.0.0.1/tcp/4441/ws/p2p/12D3KooWQW2yq5C8GGu1EXbjtzFoTenRZ4CVuL3wQbchHtxVgnJh
 const RELAY_ADDR =
-  // "/ip4/128.140.86.188/tcp/4441/ws/p2p/12D3KooWEbCKncVSvqhrZvngwPRHNktBdPFuaVXb7Y2iPigGGrPY";
-  // "/ip4/127.0.0.1/tcp/4441/ws/p2p/12D3KooWQ4gnLppcJDTBHYebXLZqxh866UavPJLjP3J65rPLH5ws";
   // "/ip4/128.140.86.188/tcp/4441/ws/p2p/12D3KooWHWZbPWceAaHyXmdrvgL6sqjzHy5nH4su7A18XYDTn3Jr";
   "/dns4/daseincore.tech/tcp/4444/wss/p2p/12D3KooWHWZbPWceAaHyXmdrvgL6sqjzHy5nH4su7A18XYDTn3Jr";
-// wss://daseincore.tech:4444/
 const isWebrtc = (ma) => {
   return ma.protoCodes().includes(WEBRTC_CODE);
 };
